@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'add here your url', credentialsId: 'add credentialsId'
+                git branch: 'main',
+                url: 'https://github.com/karlmage/jenkins-assignment.git', 
+                credentialsId: 'github_karlmage'
             }
         }
         
@@ -12,7 +14,7 @@ pipeline {
             steps {
                 // Крок для збірки проекту з Visual Studio
                 // Встановіть правильні шляхи до рішення/проекту та параметри MSBuild
-                bat '"path to MSBuild" test_repos.sln /t:Build /p:Configuration=Release'
+                bat '"C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/MSBuild.exe" test_repos.sln /t:Build /p:Configuration=Debug'
             }
         }
 
@@ -24,10 +26,11 @@ pipeline {
         }
     }
 
-    post {
+   post {
     always {
-        // Publish test results using the junit step
-         // Specify the path to the XML test result files
+        echo 'Publishing Google Test results'
+        junit allowEmptyResults: true, testResults: '**/test_report.xml'
     }
 }
+
 }
